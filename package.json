@@ -1,0 +1,25 @@
+{
+  "name": "web-shuffle-extension",
+  "version": "1.0.0",
+  "description": "Web Shuffle",
+  "main": "index.js",
+  "scripts": {
+    "release": "webstore upload --source=./ --auto-publish --extension-id=lgokgkophalfnnapghjjckmeoboepfdj"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mick-schroeder/web-shuffle-extension.git"
+  },
+  "author": "Mick Schroeder",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mick-schroeder/web-shuffle-extension/issues"
+  },
+  "homepage": "https://github.com/mick-schroeder/web-shuffle-extension#readme",
+  "devDependencies": {
+    "chrome-webstore-upload-cli": "^1.2.0"
+  },
+  "dependencies": {
+    "valid-url": "^1.0.9"
+  }
+}
