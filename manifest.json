@@ -1,6 +1,6 @@
 {
-  "name": "Web Shuffle",
-  "version": "2",
+  "name": "Mick Schroeder's Web Shuffle",
+  "version": "2.0",
   "description": "Shuffle a random link from the best sites across the web.",
   "background": {
     "scripts": [

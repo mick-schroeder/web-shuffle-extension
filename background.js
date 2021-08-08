@@ -238,12 +238,12 @@ chrome.runtime.onInstalled.addListener(function () {
   chrome.contextMenus.removeAll(function () {
     chrome.contextMenus.create({
       id: "sax-show",
-      title: 'Show pop-up',
+      title: 'Show Web Shuffle Pop-up',
       contexts: ["browser_action"]
     });
     chrome.contextMenus.create({
       id: "sax-feedback",
-      title: 'Give feedback',
+      title: 'Created By Mick Schroeder',
       contexts: ["browser_action"]
     });
   })
@@ -279,7 +279,7 @@ Context menu
 chrome.contextMenus.onClicked.addListener(async function (event) {
   if (event.menuItemId === "sax-feedback") {
     chrome.tabs.create({
-      url: 'mailto:contact@mickschroeder.com?subject=Web Shuffle',
+      url: 'https://mickschroeder.com',
     }, function (tab) {
     })
   } else if (event.menuItemId === "sax-show") {
