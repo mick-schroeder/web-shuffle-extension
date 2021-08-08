@@ -417,25 +417,30 @@ Rabbit hole
     display: flex;
     flex-direction: row;
     background: none;
+
 }
 
 #sax-label {
-    display: inline-block;
+    display: block;
+    line-height: 1em;
+    text-align: center;
+    padding-left: 0.5em;
+    padding-right: 0.5em;
 }
 
 #sax-label-secondary {
     font-size: 10pt !important;
-    padding-left: 0.2em;
     color: #bababa;
     margin: 6px 0px;
+    line-height: 1em;
+
 }
 
 #sax-label-primary {
-    font-size: 10pt !important;
-    padding-right: 0.5em;
+    font-size: 11pt !important;
     font-weight: bold;
     color: #FFFFFF;
-    line-height: initial;
+    line-height: 1em;
 }
 
 #sax-label-small-primary {

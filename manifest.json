@@ -8,7 +8,7 @@
     ],
     "persistent": false
   },  
-  "web_accessible_resources": ["images/icon_16.png", "images/icon_32.png", "images/icon_128.png", "images/rabbithole.gif", "images/rabbithole.png", "images/rabbithole_small.png", "images/spiral.png", "images/close.svg"],
+  "web_accessible_resources": ["images/icon_16.png", "images/icon_32.png", "images/icon_48.png","images/icon_128.png", "images/x-mark.png", "images/close.svg"],
   "content_scripts": [
     {
       "matches": [
@@ -24,7 +24,7 @@
   "permissions": [
     "storage",
     "contextMenus",
-    "http://webshuffle.mickschroeder.com/"
+    "https://webshuffle.mickschroeder.com/"
 
   ],
   "browser_action": {

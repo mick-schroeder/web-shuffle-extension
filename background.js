@@ -232,8 +232,8 @@ function clearCounter() {
 }
 
 chrome.runtime.onInstalled.addListener(function () {
-  // For development purposes only, uncomment when needed
-   chrome.storage.local.remove(['visited', 'welcome_seen', 'totalUrls'])
+  // For Web Shuffleelopment purposes only, uncomment when needed
+  // chrome.storage.local.remove(['visited', 'welcome_seen', 'totalUrls'])
 
   chrome.contextMenus.removeAll(function () {
     chrome.contextMenus.create({

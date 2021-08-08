@@ -85,10 +85,15 @@ function showStumbleInfo(request) {
 
     var text = document.createElement('div');
     text.id = 'sax-label';
+    text.innerHTML = `<span id="sax-label-primary">Web Shuffle</span><br/><span id="sax-label-secondary">#${request.visited}</span>`;
 
-    var title = div('sax-info-box-top-title');
-    title.innerHTML = `<span id="sax-label-secondary">Web Shuffle #</span><span id="sax-label-primary">${request.visited}.</span><img id="exit-button" src=${chrome.extension.getURL('images/close.svg')} />`;
-    text.append(title);
+    //var title = div('sax-info-box-top-title');
+    //text.append(title);
+
+    var closeButton = document.createElement('img');
+    closeButton.id = 'exit-button';
+    closeButton.src = chrome.extension.getURL('images/close.svg')
+
 
     var icon = document.createElement('img');
     icon.src = chrome.extension.getURL('images/icon_128.png')
@@ -96,6 +101,7 @@ function showStumbleInfo(request) {
     
     stumbleCounterContent.appendChild(icon);
     stumbleCounterContent.appendChild(text);
+    stumbleCounterContent.appendChild(closeButton);
 
 
     
