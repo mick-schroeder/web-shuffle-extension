@@ -10,5 +10,5 @@ Web Extension for [Web Shuffle](https://webshuffle.mickschroeder.com/)
 Go to the [Chrome Web Store](https://chrome.google.com/)
 
 **Attribution**
-Extension Based on [StumbleUponAwesome](https://github.com/basharovV/StumbleUponAwesome)
-Icons made by [Darius Dan](http://www.dariusdan.com) from [Flaticon](https://www.flaticon.com)
+- Extension Based on [StumbleUponAwesome](https://github.com/basharovV/StumbleUponAwesome)
+- Icons made by [Darius Dan](http://www.dariusdan.com) from [Flaticon](https://www.flaticon.com)

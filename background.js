@@ -1,20 +1,18 @@
 'use strict';
 
 /**
- * Keep track of the WebShuffle tab
+ * Keep track of the RandomWebsite tab
  */
-var stumbleTabId = null;
+var randomWebsiteTabId = null;
 
 /**
  * The focused window ID
  */
 var windowId = null;
 
-var totalUrls = 0; // to be counted on first run
-var os = 'mac'; // mac", "win", "android", "cros", "linux"
 
 /**
- * @typedef {Object} StumbleURL
+ * @typedef {Object} RandomWebsiteURL
  * @property {string} url
  * @property {string=} title
  * @property {string} listUrl The URL of the collection.
@@ -22,88 +20,54 @@ var os = 'mac'; // mac", "win", "android", "cros", "linux"
  */
 
 /**
-* @type {StumbleURL}
+* @type {RandomWebsiteURL}
 */
-var stumbleUrl;
+var randomWebsiteUrl;
 
 
-var isPendingStumble = false;
-
-chrome.runtime.getPlatformInfo(function (info) {
-  os = info.os;
-});
+var isPendingShuffle = false;
 
 
 /**
  * Find a random URL and load it
  * 
  */
-async function stumble() {
+async function shuffle() {
 
-  stumbleUrl = {
-    url: 'https://webshuffle.mickschroeder.com/redirect',
+  randomWebsiteUrl = {
+    url: 'https://randomwebsite.mickschroeder.com/redirect',
     title: 'Web Shuffle',
     listUrl: 'https://mickschroeder.com',
     listTitle: 'By Mick Schroeder'
   }
 
-  await set('lastStumbleUrl', stumbleUrl);
+  await set('lastRandomWebsiteUrl', randomWebsiteUrl);
 
   // Switch to exiting tab 
-  if (stumbleTabId !== null) {
+  if (randomWebsiteTabId !== null) {
     try {
-      chrome.tabs.update(stumbleTabId, {
-        url: stumbleUrl.url,
+      chrome.tabs.update(randomWebsiteTabId, {
+        url: randomWebsiteUrl.url,
         active: true
       }, function (tab) {
       })
     } catch (exception) {
       chrome.tabs.update({
-        url: stumbleUrl.url,
+        url: randomWebsiteUrl.url,
       }, async function (tab) {
-        await saveStumbleTabId(tab.id);
+        await saveRandomWebsiteTabId(tab.id);
       })
     }
   }
   // or Open New tab
   else {
     chrome.tabs.create({
-      url: stumbleUrl.url,
+      url: randomWebsiteUrl.url,
     }, async function (tab) {
-      await saveStumbleTabId(tab.id);
+      await saveRandomWebsiteTabId(tab.id);
     })
   }
 }
-
-var interval = 0;
-
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function animateIcon() {
-/*
-  
-    chrome.browserAction.setIcon({
-      imageData: imageData
-    });
-  
-
-  await sleep(200);
-  
-  chrome.browserAction.setIcon({
-    imageData: imageData
-  });
-
-  await sleep(400);
-  chrome.browserAction.setIcon({
-    imageData: null,
-    path: "./images/icon_16.png"
-  });
-
-*/
-}
-
 
 /**
  * Get a value from storage.
@@ -132,13 +96,13 @@ const set = async (key, val) => {
   })
 }
 
-const saveStumbleTabId = async tabId => {
-  await set('stumbleTabId', tabId);
-  stumbleTabId = tabId;
+const saveRandomWebsiteTabId = async tabId => {
+  await set('randomWebsiteTabId', tabId);
+  randomWebsiteTabId = tabId;
 }
 
-const getStumbleTabId = async () => {
-  return await get('stumbleTabId', null);
+const getRandomWebsiteTabId = async () => {
+  return await get('randomWebsiteTabId', null);
 }
 
 const saveLastWindowId = async windowId => {
@@ -149,87 +113,39 @@ const getLastWindowId = async () => {
   return await get('lastWindowId', null);
 }
 
-function update() {
-  chrome.storage.local.get(['visited', 'totalUrls', 'welcome_seen'], function (result) {
-
-    if (result.welcome_seen === undefined || result.welcome_seen === false || result.welcome_seen === null) {
-      chrome.tabs.executeScript({
-        file: 'styles.css'
-      }, function () {
-        chrome.tabs.executeScript({
-          file: 'content.js'
-        }, function () {
-          notifyTabWelcome();
-        });
-      });
-    } else {
-      const count = result.visited === undefined ? 0 : parseInt(result.visited)
-      const incremented = count + 1;
-      // Set new value
-      chrome.storage.local.set({ 'visited': incremented, 'totalUrls': totalUrls }, function () {
-        notifyTabStumble(incremented, totalUrls);
-      });
-    }
-  });
-}
-
-chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-  // make sure the status is 'complete' and it's the right tab
-  if (isPendingStumble && tabId === stumbleTabId && changeInfo.status === 'complete') {
-    update();
-    isPendingStumble = false;
-  }
-});
-
-function notifyTabStumble(visited, totalUrls) {
-  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    var activeTab = tabs[0];
-    chrome.tabs.sendMessage(stumbleTabId, { "message": "stumble", 'visited': visited, 'totalUrls': totalUrls, stumbleUrl });
-  });
-}
-
-function notifyTabWelcome() {
-  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-    var activeTab = tabs[0];
-    chrome.tabs.sendMessage(stumbleTabId, { "message": "welcome", "os": os });
-  });
-}
 
 // Load a page on click
-chrome.browserAction.onClicked.addListener(
+chrome.action.onClicked.addListener(
   async function (tab) {
 
     const currentWindowId = await getFocusedWindowId();
-    // Get stumble tab Id
-    const savedStumbleTabId = await getStumbleTabId();
+    // Get tab Id
+    const savedRandomWebsiteTabId = await getRandomWebsiteTabId();
     const tabs = await getBrowserTabs();
     const tabIds = tabs.map(t => t.id);
 
     // Reset if necessary
-    if (windowId !== currentWindowId || !savedStumbleTabId || !tabIds.includes(savedStumbleTabId)) {
+    if (windowId !== currentWindowId || !savedRandomWebsiteTabId || !tabIds.includes(savedRandomWebsiteTabId)) {
       windowId = currentWindowId;
       await saveLastWindowId(windowId);
-      chrome.storage.local.remove(['stumbleTabId'], () => {
-        stumbleTabId = null;
+      chrome.storage.local.remove(['randomWebsiteTabId'], () => {
+        randomWebsiteTabId = null;
       })
     }
 
-    isPendingStumble = true;
-    stumble();
-    animateIcon();
+    isPendingShuffle = true;
+    shuffle();
+    //animateIcon();
   }
 );
 
-// When a tab closes, if it's the Stumble tab, clear the id
+// When a tab closes, if it's the Web Shuffle tab, clear the id
 chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
-  if (tabId === stumbleTabId) {
-    stumbleTabId = null;
+  if (tabId === randomWebsiteTabId) {
+    randomWebsiteTabId = null;
   }
 })
 
-function clearCounter() {
-  chrome.storage.local.remove(['visited'])
-}
 
 chrome.runtime.onInstalled.addListener(function () {
   // For Web Shuffleelopment purposes only, uncomment when needed
@@ -282,11 +198,7 @@ chrome.contextMenus.onClicked.addListener(async function (event) {
       url: 'https://mickschroeder.com',
     }, function (tab) {
     })
-  } else if (event.menuItemId === "sax-show") {
-    chrome.storage.local.get(['visited', 'totalUrls', 'welcome_seen'], function (result) {
-      notifyTabStumble(result.visited, result.totalUrls);
-    });
-  } 
+  }
 });
 
 
@@ -296,8 +208,8 @@ chrome.contextMenus.onClicked.addListener(async function (event) {
  */
 async function init() {
   windowId = await getLastWindowId();
-  stumbleTabId = await getStumbleTabId();
-  stumbleUrl = await get('lastStumbleUrl', null);
+  randomWebsiteTabId = await getRandomWebsiteTabId();
+  randomWebsiteUrl = await get('lastRandomWebsiteUrl', null);
 }
 
 init();

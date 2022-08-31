@@ -1,37 +1,22 @@
 {
-  "name": "Mick Schroeder's Web Shuffle",
-  "version": "2.0",
-  "description": "Shuffle a random link from the best sites across the web.",
+  "name": "Random Website",
+  "manifest_version": 3,
+
+  "version": "3.0",
+  "description": "Take me to a random website, please.",
   "background": {
-    "scripts": [
-      "background.js"
-    ],
-    "persistent": false
+    "service_worker": "background.js"
   },  
-  "web_accessible_resources": ["images/icon_16.png", "images/icon_32.png", "images/icon_48.png","images/icon_128.png", "images/x-mark.png", "images/close.svg"],
-  "content_scripts": [
-    {
-      "matches": [
-        "<all_urls>"
-      ],
-      "css": ["styles.css"],
-      "run_at": "document_idle",
-      "js": [
-        "content.js"
-      ]
-    }
-  ],
   "permissions": [
     "storage",
-    "contextMenus",
-    "https://webshuffle.mickschroeder.com/"
-
+    "contextMenus"
   ],
-  "browser_action": {
+  "action": {
     "default_icon": {
       "16": "images/icon_16.png",
       "32": "images/icon_32.png",
       "48": "images/icon_48.png",
+      "96": "images/icon_96.png",
       "128": "images/icon_128.png"
     }
   },
@@ -39,6 +24,7 @@
     "16": "images/icon_16.png",
     "32": "images/icon_32.png",
     "48": "images/icon_48.png",
+    "96": "images/icon_96.png",
     "128": "images/icon_128.png"
   },
   "commands": {
@@ -50,6 +36,5 @@
         "linux": "Alt+Shift+S"
       }
     }
-  },
-  "manifest_version": 2
+  }
 }
