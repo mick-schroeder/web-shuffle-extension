@@ -1,9 +1,9 @@
 'use strict';
 
 /**
- * Keep track of the RandomWebsite tab
+ * Keep track of the WebShuffle tab
  */
-var randomWebsiteTabId = null;
+var webShuffleTabId = null;
 
 /**
  * The focused window ID
@@ -12,7 +12,7 @@ var windowId = null;
 
 
 /**
- * @typedef {Object} RandomWebsiteURL
+ * @typedef {Object} WebShuffleURL
  * @property {string} url
  * @property {string=} title
  * @property {string} listUrl The URL of the collection.
@@ -20,9 +20,9 @@ var windowId = null;
  */
 
 /**
-* @type {RandomWebsiteURL}
+* @type {WebShuffleURL}
 */
-var randomWebsiteUrl;
+var webShuffleUrl;
 
 
 var isPendingShuffle = false;
@@ -34,37 +34,37 @@ var isPendingShuffle = false;
  */
 async function shuffle() {
 
-  randomWebsiteUrl = {
-    url: 'https://randomwebsite.mickschroeder.com/redirect',
+  webShuffleUrl = {
+    url: 'https://webshuffle.mickschroeder.com/redirect',
     title: 'Web Shuffle',
     listUrl: 'https://mickschroeder.com',
     listTitle: 'By Mick Schroeder'
   }
 
-  await set('lastRandomWebsiteUrl', randomWebsiteUrl);
+  await set('lastWebShuffleUrl', webShuffleUrl);
 
   // Switch to exiting tab 
-  if (randomWebsiteTabId !== null) {
+  if (webShuffleTabId !== null) {
     try {
-      chrome.tabs.update(randomWebsiteTabId, {
-        url: randomWebsiteUrl.url,
+      chrome.tabs.update(webShuffleTabId, {
+        url: webShuffleUrl.url,
         active: true
       }, function (tab) {
       })
     } catch (exception) {
       chrome.tabs.update({
-        url: randomWebsiteUrl.url,
+        url: webShuffleUrl.url,
       }, async function (tab) {
-        await saveRandomWebsiteTabId(tab.id);
+        await saveWebShuffleTabId(tab.id);
       })
     }
   }
   // or Open New tab
   else {
     chrome.tabs.create({
-      url: randomWebsiteUrl.url,
+      url: webShuffleUrl.url,
     }, async function (tab) {
-      await saveRandomWebsiteTabId(tab.id);
+      await saveWebShuffleTabId(tab.id);
     })
   }
 }
@@ -96,13 +96,13 @@ const set = async (key, val) => {
   })
 }
 
-const saveRandomWebsiteTabId = async tabId => {
-  await set('randomWebsiteTabId', tabId);
-  randomWebsiteTabId = tabId;
+const saveWebShuffleTabId = async tabId => {
+  await set('webShuffleTabId', tabId);
+  webShuffleTabId = tabId;
 }
 
-const getRandomWebsiteTabId = async () => {
-  return await get('randomWebsiteTabId', null);
+const getWebShuffleTabId = async () => {
+  return await get('webShuffleTabId', null);
 }
 
 const saveLastWindowId = async windowId => {
@@ -120,16 +120,16 @@ chrome.action.onClicked.addListener(
 
     const currentWindowId = await getFocusedWindowId();
     // Get tab Id
-    const savedRandomWebsiteTabId = await getRandomWebsiteTabId();
+    const savedWebShuffleTabId = await getWebShuffleTabId();
     const tabs = await getBrowserTabs();
     const tabIds = tabs.map(t => t.id);
 
     // Reset if necessary
-    if (windowId !== currentWindowId || !savedRandomWebsiteTabId || !tabIds.includes(savedRandomWebsiteTabId)) {
+    if (windowId !== currentWindowId || !savedWebShuffleTabId || !tabIds.includes(savedWebShuffleTabId)) {
       windowId = currentWindowId;
       await saveLastWindowId(windowId);
-      chrome.storage.local.remove(['randomWebsiteTabId'], () => {
-        randomWebsiteTabId = null;
+      chrome.storage.local.remove(['webShuffleTabId'], () => {
+        webShuffleTabId = null;
       })
     }
 
@@ -141,26 +141,31 @@ chrome.action.onClicked.addListener(
 
 // When a tab closes, if it's the Web Shuffle tab, clear the id
 chrome.tabs.onRemoved.addListener(function (tabId, removeInfo) {
-  if (tabId === randomWebsiteTabId) {
-    randomWebsiteTabId = null;
+  if (tabId === webShuffleTabId) {
+    webShuffleTabId = null;
   }
 })
 
 
 chrome.runtime.onInstalled.addListener(function () {
-  // For Web Shuffleelopment purposes only, uncomment when needed
+  // For Web Shuffle development purposes only, uncomment when needed
   // chrome.storage.local.remove(['visited', 'welcome_seen', 'totalUrls'])
 
   chrome.contextMenus.removeAll(function () {
     chrome.contextMenus.create({
-      id: "sax-show",
-      title: 'Show Web Shuffle Pop-up',
-      contexts: ["browser_action"]
+      id: "action-show",
+      title: 'Show in Chrome Web Store',
+      contexts: ["action"]
     });
     chrome.contextMenus.create({
-      id: "sax-feedback",
+      id: "action-homepage",
+      title: 'Web Shuffle Homepage',
+      contexts: ["action"]
+    });
+    chrome.contextMenus.create({
+      id: "action-feedback",
       title: 'Created By Mick Schroeder',
-      contexts: ["browser_action"]
+      contexts: ["action"]
     });
   })
 });
@@ -193,9 +198,21 @@ const getFocusedWindowId = () => {
 Context menu
 */
 chrome.contextMenus.onClicked.addListener(async function (event) {
-  if (event.menuItemId === "sax-feedback") {
+  if (event.menuItemId === "action-feedback") {
     chrome.tabs.create({
       url: 'https://mickschroeder.com',
+    }, function (tab) {
+    })
+  }
+  else if  (event.menuItemId === "action-show") {
+    chrome.tabs.create({
+      url: 'https://chrome.google.com/webstore/detail/random-website/lgokgkophalfnnapghjjckmeoboepfdj',
+    }, function (tab) {
+    })
+  }
+  else if  (event.menuItemId === "action-homepage") {
+    chrome.tabs.create({
+      url: 'https://webshuffle.mickschroeder.com',
     }, function (tab) {
     })
   }
@@ -208,8 +225,8 @@ chrome.contextMenus.onClicked.addListener(async function (event) {
  */
 async function init() {
   windowId = await getLastWindowId();
-  randomWebsiteTabId = await getRandomWebsiteTabId();
-  randomWebsiteUrl = await get('lastRandomWebsiteUrl', null);
+  webShuffleTabId = await getWebShuffleTabId();
+  webShuffleUrl = await get('lastWebShuffleUrl', null);
 }
 
 init();

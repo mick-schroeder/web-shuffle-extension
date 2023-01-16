@@ -1,8 +1,8 @@
 
-# Random Website Extension
+# Web Shuffle Extension
 ## By Mick Schroeder
 
-Web Extension for [Random Website](https://randomwebsite.mickschroeder.com/)
+Web Extension for [Web Shuffle](https://webshuffle.mickschroeder.com/)
 
 ### How to install extension
 
